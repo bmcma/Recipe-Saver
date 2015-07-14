@@ -1,13 +1,12 @@
 package businesslayer;
-
-import java.util.List;
-
-import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
-
 import dataaccesslayer.RecipeDataAccessObject;
 import dataaccesslayer.RecipeDataAccessObjectImplementation;
 import datatransferobjects.Recipe;
+
+/*
+ * Business logic for recipe builder. Ensures user inputs are tested and match 
+ */
 
 public class RecipeBusinessLogic {
 	//used to test for max length values in recipe inputs
@@ -21,34 +20,34 @@ public class RecipeBusinessLogic {
 		recipeDAO = new RecipeDataAccessObjectImplementation();
 	}
 	
+	//returns a DefaultTableModel containing all recipes
 	public DefaultTableModel getAllRecipes(){
 		return recipeDAO.getAllRecipes();
 	}
 	
+	//adds a recipe to the database
 	public int addRecipe(Recipe recipe) throws ValidationException{
 		validateRecipe(recipe);
 		return recipeDAO.addRecipe(recipe);
 	}
 	
+	//updates recipe in the database
 	public int updateRecipe(Recipe recipe) throws ValidationException{
 		validateRecipe(recipe);
 		return recipeDAO.updateRecipe(recipe);
 	}
 	
-	/*public List<Recipe> getRecipeByKeyWord(String keyword){
-		return recipeDAO.getRecipeByKeyWord(keyword);
-	}*/
-	
+	//returns a DefaultTableModel with all recipes containing keyword
 	public DefaultTableModel getRecipeByKeyWord(String keyword){
 		return recipeDAO.getRecipeByKeyWord(keyword);
 	}
 	
+	//deletes recipe from the database
 	public int deleteRecipe(Recipe recipe) {
 		return recipeDAO.deleteRecipe(recipe);
 	}
 	
-	
-	//TODO set String values to not null in SQL to enforce entry
+	//validates inputs
 	public void validateInput(String input, String column, int maxLength, boolean canBeNull) throws ValidationException{
 		if(input == null && canBeNull){
 			//do nothing as null is a valid input
@@ -64,6 +63,8 @@ public class RecipeBusinessLogic {
 		}
 		
 	}
+	
+	//validates recipe based on inputs
 	public void validateRecipe(Recipe recipe) throws ValidationException{
 		validateInput(recipe.getTitle(), "title", TITLE_MAX_LENGTH, true);
 		validateInput(recipe.getIngredients(), "ingredients", INGREDIENTS_MAX_LENGTH, true);

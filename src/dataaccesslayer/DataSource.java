@@ -1,5 +1,9 @@
 package dataaccesslayer;
 
+/*
+ * Class to create a connection to the MySql database
+ */
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,6 +22,7 @@ public class DataSource {
 				System.out.println("Cannot create new connection, one exists already");
 			}
 			else{
+				//if no connection exists, connect to the database 
 				connection = DriverManager.getConnection(connectionString, username, password);
 			}
 		}

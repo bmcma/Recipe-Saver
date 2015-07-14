@@ -1,13 +1,16 @@
 package datatransferobjects;
-
-import java.awt.Font;
-
+/*
+ * Class to create Recipes
+ */
 public class Recipe {
+	
+	//private variables for Recipe 
 	private int recipeId;
 	private String title;
 	private String ingredients;
 	private String instructions;
-
+	
+	//getters and setters for Recipe
 	public String getTitle() {
 		return title;
 	}
@@ -40,14 +43,11 @@ public class Recipe {
 		this.recipeId = recipeId;
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
-		/*String output = "ID: " + String.valueOf(this.getRecipeId()) + " TITLE: " + this.getTitle().toUpperCase()
-				+ "\nINGREDIENTS: " + this.getIngredients()
-				+ "\nINSTRUCTIONS: " + this.getInstructions() + "\n";*/
 		String output = String.format("ID: %s \nTITLE: %s \nINGREDIENTS: %s \nINSTRUCTIONS: %s \n", String.valueOf(this.getRecipeId()), this.getTitle().toUpperCase(), 
 				this.getIngredients(), this.getInstructions());
 		return output;
-	}
+	}*/
 
 }

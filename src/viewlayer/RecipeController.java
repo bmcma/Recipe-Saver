@@ -5,6 +5,9 @@ import javax.swing.table.DefaultTableModel;
 import businesslayer.ValidationException;
 import datatransferobjects.Recipe;
 
+/*
+ * Controller in the MVC pattern - interacts with the model
+ */
 public class RecipeController {
 	
 	private final RecipeModel model;

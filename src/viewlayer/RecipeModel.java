@@ -1,14 +1,13 @@
 package viewlayer;
-
-import java.util.List;
 import java.util.Observable;
-
-import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
-
 import datatransferobjects.Recipe;
 import businesslayer.RecipeBusinessLogic;
 import businesslayer.ValidationException;
+
+/*
+ * Model for the MVC pattern - interacts with the data
+ */
 
 public class RecipeModel extends Observable{
 	
@@ -45,10 +44,6 @@ public class RecipeModel extends Observable{
 		rpl.validateRecipe(recipe);
 		return rpl.updateRecipe(recipe);
 	}
-	
-	/*public List<Recipe> getRecipeByKeyWord(String keyword){
-		return rpl.getRecipeByKeyWord(keyword);
-	}*/
 	
 	public DefaultTableModel getRecipeByKeyWord(String keyword){
 		return rpl.getRecipeByKeyWord(keyword);

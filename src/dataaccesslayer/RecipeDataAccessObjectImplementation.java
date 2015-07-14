@@ -1,6 +1,4 @@
 package dataaccesslayer;
-
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,9 +6,14 @@ import java.sql.SQLException;
 import javax.swing.table.DefaultTableModel;
 import datatransferobjects.Recipe;
 
+/*
+ * DataAccessObject interface implementation
+ */
+
 public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObject{
 	
-
+	
+	//queries for all the recipes in the database
 	@Override
 	public DefaultTableModel getAllRecipes() {
 		Connection con = null;
@@ -23,6 +26,7 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 			con = ds.createConnection();
 			pstmt = con.prepareStatement(
 					"SELECT recipeId, title, ingredients, instructions FROM recipes ORDER BY recipeId");
+			//query database
 			rs = pstmt.executeQuery();
 			Object [][] rows = null;
 			recipes = new DefaultTableModel(rows, columns);
@@ -43,6 +47,7 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 			e.printStackTrace();
 		}
 		finally{
+			//close the connection
 			try{ if(rs != null){ rs.close(); } }
 			catch(SQLException ex){System.out.println(ex.getMessage());}
 			try{ if(pstmt != null){ pstmt.close(); }}
@@ -53,7 +58,7 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 		return recipes;
 	}
 
-	
+	//add a new recipe to the database
 	@Override
 	public int addRecipe(Recipe recipe) {
 		Connection con = null;
@@ -62,6 +67,7 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 		try{
 			DataSource ds = new DataSource();
 			con = ds.createConnection();
+			//SQL insert statement
 			pstmt = con.prepareStatement(
 					"INSERT INTO recipes (title, ingredients, instructions) " +
 			        "VALUES(?, ?, ?)");
@@ -74,30 +80,7 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 			e.printStackTrace();
 		}
 		finally{
-			try{ if(pstmt != null){ pstmt.close(); }}
-			catch(SQLException ex){System.out.println(ex.getMessage());}
-			try{ if(con != null){ con.close(); }}
-			catch(SQLException ex){System.out.println(ex.getMessage());}
-		}
-		return recordsChanged;
-	}
-
-	@Override
-	public int deleteRecipe(Recipe recipe) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
-		int recordsChanged = 0;
-		try{
-			DataSource ds = new DataSource();
-			con = ds.createConnection();
-			pstmt = con.prepareStatement("DELETE FROM recipes WHERE recipeId = ?");
-			pstmt.setInt(1, recipe.getRecipeId());
-			recordsChanged = pstmt.executeUpdate();
-		}
-		catch(SQLException e){
-			e.printStackTrace();
-		}
-		finally{
+			//close connection
 			try{ if(pstmt != null){ pstmt.close(); }}
 			catch(SQLException ex){System.out.println(ex.getMessage());}
 			try{ if(con != null){ con.close(); }}
@@ -106,6 +89,34 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 		return recordsChanged;
 	}
 	
+	//delete recipe from database
+	@Override
+	public int deleteRecipe(Recipe recipe) {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		int recordsChanged = 0;
+		try{
+			DataSource ds = new DataSource();
+			con = ds.createConnection();
+			//delete recipe which matches the primary key recipeId
+			pstmt = con.prepareStatement("DELETE FROM recipes WHERE recipeId = ?");
+			pstmt.setInt(1, recipe.getRecipeId());
+			recordsChanged = pstmt.executeUpdate();
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+		}
+		finally{
+			//close the connection
+			try{ if(pstmt != null){ pstmt.close(); }}
+			catch(SQLException ex){System.out.println(ex.getMessage());}
+			try{ if(con != null){ con.close(); }}
+			catch(SQLException ex){System.out.println(ex.getMessage());}
+		}
+		return recordsChanged;
+	}
+	
+	//search for recipe based on keyword
 	@Override
 	public DefaultTableModel getRecipeByKeyWord(String keyword) {
 		Connection con = null;
@@ -116,6 +127,7 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 		try{
 			DataSource ds = new DataSource();
 			con = ds.createConnection();
+			//select recipes where the title contains the keyword
 			pstmt = con.prepareStatement(
 					"SELECT recipeId, title, ingredients, instructions FROM recipes WHERE title LIKE ?");
 			pstmt.setString(1, "%" + keyword + "%");
@@ -138,6 +150,7 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 			e.printStackTrace();
 		}
 		finally{
+			//close the connection
 			try{ if(rs != null){ rs.close(); } }
 			catch(SQLException ex){System.out.println(ex.getMessage());}
 			try{ if(pstmt != null){ pstmt.close(); }}
@@ -148,7 +161,7 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 		return recipes;
 	}
 
-
+	//update the recipe in the database
 	@Override
 	public int updateRecipe(Recipe recipe) {
 		Connection con = null;
@@ -168,6 +181,7 @@ public class RecipeDataAccessObjectImplementation implements RecipeDataAccessObj
 			e.printStackTrace();
 		}
 		finally{
+			//close the connection
 			try{ if(pstmt != null){pstmt.close();}}
 			catch (SQLException ex) {System.out.println(ex.getMessage());}
 			try{ if(con != null){con.close();}}
