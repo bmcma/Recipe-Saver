@@ -15,7 +15,8 @@ public class DataSource {
 	private final String password = "password";
 	
 	public DataSource(){}
-
+	
+	//create the connection
 	public Connection createConnection(){
 		try{
 			if(connection != null){

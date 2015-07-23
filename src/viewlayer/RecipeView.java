@@ -1,16 +1,12 @@
 package viewlayer;
 
 import java.awt.CardLayout;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Observable;
-import java.util.Observer;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,18 +20,15 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-
 import businesslayer.ValidationException;
 import datatransferobjects.Recipe;
 
 /*
  * View for the MVC - interacts with the user and the controller
+ * @author Brian McMahon
  */
 
-//TODO Add print functionality
-//TODO Add key listener for tabbing between selections
-
-public class RecipeView implements Observer {
+public class RecipeView {
 	private JFrame frame = new JFrame("Recipe Builder");
 	private DefaultTableModel model, model1;
 	private JTable searchRecipeTable = new JTable();
@@ -47,12 +40,13 @@ public class RecipeView implements Observer {
 	private JPanel container, addPanel, homePanel, allPanel, searchPanel;
 	private CardLayout cl = new CardLayout();
 	private JButton add, search, cancel, cancel1, cancel2, clear, save, delete,
-			delete1, update, update1, print, print1, viewAll;
+			delete1, update, update1, savePdf, savePdf1, viewAll;
 	private JLabel searchList;
 	private RecipeController con;
 
 	public RecipeView(RecipeController con) {
 		this.con = con;
+
 		// container panel for the cardlayout
 		container = new JPanel();
 		container.setLayout(cl);
@@ -68,7 +62,7 @@ public class RecipeView implements Observer {
 		container.add(searchPanel, "3");
 		container.add(allPanel, "4");
 		cl.show(container, "1");
-
+		// call event handlers
 		registerHomePanelEvents();
 		registerAddPanelEvents();
 		registerSearchPanelEvents();
@@ -83,7 +77,7 @@ public class RecipeView implements Observer {
 
 	}
 
-	// panel and features for welcome screen
+	// create panel and features for welcome screen
 	private void homeJPanel() {
 		homePanel = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -108,7 +102,7 @@ public class RecipeView implements Observer {
 		search = new JButton("Search Recipes");
 		add = new JButton("Add Recipe");
 		viewAll = new JButton("All Recipes");
-
+		// set the gridx and gridy co-ordinates
 		c.gridx = 0;
 		c.gridy = 0;
 		homePanel.add(welcome, c);
@@ -127,7 +121,7 @@ public class RecipeView implements Observer {
 		homePanel.add(viewAll, c);
 	}
 
-	// panel and features for add recipe screen
+	// create panel and features for add recipe screen
 	private void addJPanel() {
 		GridBagConstraints c = new GridBagConstraints();
 		addPanel = new JPanel(new GridBagLayout());
@@ -142,6 +136,7 @@ public class RecipeView implements Observer {
 		instructions = new JLabel("Enter instructions: ");
 		addInstructions.setLineWrap(true);// wraps text to new line when limit
 											// is reached
+		// set the gridx and gridy co-ordinates
 		c.gridx = 0;
 		c.gridy = 0;
 		c.insets = new Insets(10, 0, 0, 0);// set the top padding
@@ -171,7 +166,7 @@ public class RecipeView implements Observer {
 		addPanel.add(cancel, c);
 	}
 
-	// search results panel
+	// create search results panel
 	private void searchJPanel() {
 		GridBagConstraints c = new GridBagConstraints();
 		c.insets = new Insets(10, 0, 0, 0);
@@ -184,9 +179,10 @@ public class RecipeView implements Observer {
 		cancel1 = new JButton("Cancel");
 		delete = new JButton("Delete");
 		update = new JButton("Update");
-		print = new JButton("Print");
+		savePdf = new JButton("Save as PDF");
 
 		searchList = new JLabel();
+		// set the gridx and gridy co-ordinates
 		c.gridx = 0;
 		c.gridy = 0;
 		searchPanel.add(searchList, c);
@@ -194,7 +190,6 @@ public class RecipeView implements Observer {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		searchPanel.add(new JScrollPane(searchRecipeTable), c);
 		searchRecipeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		// c.fill = GridBagConstraints.NONE;
 		c.insets = new Insets(5, 5, 5, 5);
 		c.gridwidth = 1;// reset the width to put all buttons in one row
 		c.gridx++;
@@ -205,13 +200,14 @@ public class RecipeView implements Observer {
 		c.gridx++;
 		searchPanel.add(update, c);
 		c.gridx++;
-		searchPanel.add(print, c);
+		searchPanel.add(savePdf, c);
 
 	}
 
 	// all recipes panel
 	private void allJPanel() {
 		GridBagConstraints c = new GridBagConstraints();
+		// set to top of page
 		c.anchor = GridBagConstraints.PAGE_START;
 		c.gridwidth = 5;
 		c.weighty = 1;
@@ -222,8 +218,8 @@ public class RecipeView implements Observer {
 		cancel2 = new JButton("Cancel");
 		delete1 = new JButton("Delete");
 		update1 = new JButton("Update");
-		print1 = new JButton("Print");
-
+		savePdf1 = new JButton("Save as PDF");
+		// set the gridx and gridy co-ordinates
 		c.gridx = 0;
 		c.gridy = 0;
 		allPanel.add(allList, c);
@@ -241,50 +237,22 @@ public class RecipeView implements Observer {
 		c.gridx++;
 		allPanel.add(update1, c);
 		c.gridx++;
-		allPanel.add(print1, c);
+		allPanel.add(savePdf1, c);
 	}
 
-	public String getTitle() {
+	// get the text from the JTextField
+	private String getTitle() {
 		return addTitle.getText();
 	}
 
-	public String getIngredients() {
+	// get the text from the JTextArea
+	private String getIngredients() {
 		return addIngredients.getText();
 	}
 
-	public String getInstructions() {
+	// get the text from the JTextArea
+	private String getInstructions() {
 		return addInstructions.getText();
-	}
-
-	// method to update the JTable and Database based on user entries
-	public void update(DefaultTableModel model, JTable table) {
-		// loop through the tables rows and update the database with all changes
-		int lastRow = model.getRowCount();
-		for (int i = 0; i < lastRow; i++) {
-			int recipeId = (int) model.getValueAt(i, 0);
-			String title = (String) model.getValueAt(i, 1);
-			String ingredients = (String) model.getValueAt(i, 2);
-			String instructions = (String) model.getValueAt(i, 3);
-			Recipe recipe = new Recipe();
-			recipe.setRecipeId(recipeId);
-			recipe.setTitle(title);
-			recipe.setIngredients(ingredients);
-			recipe.setInstructions(instructions);
-			try {
-				con.updateRecipe(recipe);
-			} catch (ValidationException e1) {
-				e1.printStackTrace();
-			}
-		}
-	}
-
-	// method to delete the recipe from the table and the database
-	public void delete(DefaultTableModel model, JTable table) {
-		int recipeId = (int) model.getValueAt(table.getSelectedRow(), 0);
-		Recipe recipe = new Recipe();
-		recipe.setRecipeId(recipeId);
-		con.deleteRecipe(recipe);
-		model.removeRow(table.getSelectedRow());
 	}
 
 	// event listeners for the home/welcome screen
@@ -331,7 +299,6 @@ public class RecipeView implements Observer {
 				} catch (NullPointerException e1) {
 					return;
 				}
-
 			}
 		});
 
@@ -356,10 +323,10 @@ public class RecipeView implements Observer {
 	private void registerAddPanelEvents() {
 
 		save.addActionListener(new ActionListener() {
-
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				Recipe recipe = new Recipe();
+			public void actionPerformed(ActionEvent e) {
+				// create new instance of a recipe
+				Recipe recipe = con.getRecipe();
 				try {
 					recipe.setTitle(getTitle());
 					recipe.setIngredients(getIngredients());
@@ -412,7 +379,7 @@ public class RecipeView implements Observer {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				delete(model, searchRecipeTable);
+				con.delete(model, searchRecipeTable);
 
 			}
 
@@ -423,21 +390,21 @@ public class RecipeView implements Observer {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				update(model, searchRecipeTable);
+				con.update(model, searchRecipeTable);
 			}
 		});
 
-		// print selected recipe
-		print.addActionListener(new ActionListener() {
+		// save recipe to pdf
+		savePdf.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Print output to PDF, either selected or if not then all
-				// recipes!
+				con.saveToPdf(model, searchRecipeTable);
 			}
 		});
 	}
 
+	// event listeners for the all recipe screen
 	private void registerAllPanelEvents() {
 		// button to return to the home screen panel
 		cancel2.addActionListener(new ActionListener() {
@@ -454,7 +421,7 @@ public class RecipeView implements Observer {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				delete(model1, allRecipeTable);
+				con.delete(model1, allRecipeTable);
 			}
 
 		});
@@ -465,43 +432,30 @@ public class RecipeView implements Observer {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// call the update method to update the database
-				update(model1, allRecipeTable);
+				con.update(model1, allRecipeTable);
 			}
 
 		});
 
-		// print recipe
-		print1.addActionListener(new ActionListener() {
+		// save recipe to pdf
+		savePdf1.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				con.saveToPdf(model1, allRecipeTable);
 			}
 		});
 	}
 
+	// run the program
 	public static void main(String[] args) {
 		RecipeController cont = new RecipeController();
-		// RecipeView gui = new RecipeView(cont);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				new RecipeView(cont);
 			}
 		});
-		// gui.setResizable(false);
-	}
-
-	// TODO Review Observer implementation
-	@Override
-	public void update(Observable o, Object object) {
-		if (o instanceof RecipeModel) {
-			RecipeModel model = (RecipeModel) o;
-			title.setText(model.getTitle() + "");
-			ingredients.setText(model.getIngredients());
-			instructions.setText(model.getInstructions() + "");
-		}
-
 	}
 
 }

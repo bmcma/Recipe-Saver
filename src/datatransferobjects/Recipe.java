@@ -43,11 +43,4 @@ public class Recipe {
 		this.recipeId = recipeId;
 	}
 
-	/*@Override
-	public String toString() {
-		String output = String.format("ID: %s \nTITLE: %s \nINGREDIENTS: %s \nINSTRUCTIONS: %s \n", String.valueOf(this.getRecipeId()), this.getTitle().toUpperCase(), 
-				this.getIngredients(), this.getInstructions());
-		return output;
-	}*/
-
 }

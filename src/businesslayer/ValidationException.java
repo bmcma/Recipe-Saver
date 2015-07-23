@@ -1,7 +1,7 @@
 package businesslayer;
 
 /*
- * Create the validation exceptions
+ * Create the validation exceptions for incorrect inputs
  */
 public class ValidationException extends Exception{
 	private static final long serialVersionUID = 1L;

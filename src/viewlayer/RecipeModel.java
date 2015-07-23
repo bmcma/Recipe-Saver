@@ -1,56 +1,41 @@
 package viewlayer;
-import java.util.Observable;
-import javax.swing.table.DefaultTableModel;
+
+import java.io.FileNotFoundException;
+import com.itextpdf.text.DocumentException;
+import pdfwriter.Writer;
 import datatransferobjects.Recipe;
 import businesslayer.RecipeBusinessLogic;
-import businesslayer.ValidationException;
 
 /*
  * Model for the MVC pattern - interacts with the data
  */
 
-public class RecipeModel extends Observable{
-	
-	private RecipeBusinessLogic rpl;
+public class RecipeModel{
+	// variables needed to access and manipulate data
+	private RecipeBusinessLogic rbl;
 	private Recipe recipe;
-	
-	public RecipeModel(){
-		rpl = new RecipeBusinessLogic();
+	private Writer writer;
+
+	// initialize recipe and rbl variable
+	public RecipeModel() {
+		rbl = new RecipeBusinessLogic();
 		recipe = new Recipe();
 	}
-	
-	public String getTitle(){
-		return recipe.getTitle();
+
+	// getters for variables
+	public Recipe getRecipe() {
+		return recipe;
 	}
-	
-	public String getIngredients(){
-		return recipe.getIngredients();
+
+	public RecipeBusinessLogic getRbl() {
+		return rbl;
 	}
-	
-	public String getInstructions(){
-		return recipe.getInstructions();
-	}
-	
-	public DefaultTableModel getAllRecipes(){
-		return rpl.getAllRecipes();
-	}
-	
-	public int addRecipe(Recipe recipe) throws ValidationException{
-		rpl.validateRecipe(recipe);
-		return rpl.addRecipe(recipe);
-	}
-	
-	public int updateRecipe(Recipe recipe) throws ValidationException{
-		rpl.validateRecipe(recipe);
-		return rpl.updateRecipe(recipe);
-	}
-	
-	public DefaultTableModel getRecipeByKeyWord(String keyword){
-		return rpl.getRecipeByKeyWord(keyword);
-	}
-	
-	public int deleteRecipe(Recipe recipe) {
-		return rpl.deleteRecipe(recipe);
+
+	public Writer getWriter(String fn) throws FileNotFoundException,
+			DocumentException {
+		// initialize writer to allow it to accept passed in parameters
+		writer = new Writer(fn);
+		return writer;
 	}
 
 }
